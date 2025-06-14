@@ -13,14 +13,3 @@
 }
 
 
-.checkboxtree-container {
-  text-align: left;
-}
-.checkboxtree-container .tree-node-container {
-  display: flex;
-  align-items: center;
-}
-
-.checkboxtree-container .tree-node-container span {
-  margin: auto 1px;
-}

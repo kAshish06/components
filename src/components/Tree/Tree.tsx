@@ -1,5 +1,6 @@
 import React from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import "./Tree.scss";
 type FlatData = {
   id: number;
   name: string;
