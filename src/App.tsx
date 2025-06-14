@@ -58,7 +58,7 @@ const treeData = [
 function App() {
   return (
     <>
-      <Tree data={treeData} />
+      <Tree data={treeData} selectable={true} />
     </>
   );
 }
