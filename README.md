@@ -1,54 +1,39 @@
-# React + TypeScript + Vite
+# React Components Library
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A collection of reusable React components built with TypeScript. This repository contains commonly used UI components that can be easily integrated into your React applications.
 
-Currently, two official plugins are available:
+## Available Components
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 1. Tree Component
 
-## Expanding the ESLint configuration
+A customizable tree view component that supports selection, expansion/collapse, and custom node rendering.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+#### Usage
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```tsx
+import { Tree } from '@your-username/components';
+
+  return (
+    <div className="app">
+      <h2>Tree Component Example</h2>
+      <Tree
+        data={treeData}
+        selectable={true}
+        onNodeClick={handleNodeClick}
+      />
+    </div>
+  );
+}
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+#### Props
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Prop        | Type                       | Default    | Description                      |
+| ----------- | -------------------------- | ---------- | -------------------------------- |
+| data        | `Data[]`                   | `[]`       | Array of data to render the tree |
+| selectable  | `boolean`                  | `true`     | Enable/disable node selection    |
+| onNodeClick | `(node: FlatData) => void` | `() => {}` | Callback when a node is clicked  |
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## License
+
+MIT
