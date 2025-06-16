@@ -1,11 +1,15 @@
 import React from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import useClickOutside from "../../hooks/useClickOutside";
+
 import "./Dropdown.scss";
+
 type Prop<T, K1 extends keyof T, K2 extends keyof T> = {
   options: T[];
   labelKey: K1;
   valueKey: K2;
   selected?: T;
+  placeholder?: string;
 } & (T[K1] extends string ? object : never) &
   (T[K2] extends string ? object : never);
 
@@ -14,9 +18,15 @@ export default function Dropdown<T, K1 extends keyof T, K2 extends keyof T>({
   labelKey,
   valueKey,
   selected,
+  placeholder = "Select",
 }: Prop<T, K1, K2>) {
+  const optionContainerRef = React.useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = React.useState(false);
   const [internallySelected, setInternallySelected] = React.useState(selected);
+  const outsideClickHandler = () => {
+    if (isOpen) setIsOpen(false);
+  };
+  useClickOutside(optionContainerRef, outsideClickHandler);
   const handleOpenClose = () => {
     setIsOpen((prev) => !prev);
   };
@@ -24,13 +34,29 @@ export default function Dropdown<T, K1 extends keyof T, K2 extends keyof T>({
     setInternallySelected(option);
     handleOpenClose();
   };
+  const handleKeyDown = (e: React.KeyboardEvent, option: T) => {
+    switch (e.code) {
+      case "Enter": {
+        setInternallySelected(option);
+        handleOpenClose();
+        break;
+      }
+      case "Escape": {
+        handleOpenClose();
+        break;
+      }
+      default: {
+        return;
+      }
+    }
+  };
   return (
-    <div className="dropdown-container">
-      <div onClick={handleOpenClose} className="selected-container">
+    <div className="dropdown-container" ref={optionContainerRef}>
+      <button onClick={handleOpenClose} className="selected-container">
         <span>
           {internallySelected
             ? (internallySelected[labelKey] as string)
-            : "Select"}
+            : placeholder}
         </span>
         <span>
           {isOpen ? (
@@ -39,21 +65,28 @@ export default function Dropdown<T, K1 extends keyof T, K2 extends keyof T>({
             <ChevronDown size="18px" strokeWidth={1} />
           )}
         </span>
-      </div>
+      </button>
       {isOpen && (
-        <div>
+        <ul className="option-container">
           {options.map((option) => {
             return (
-              <div
+              <li
+                tabIndex={0}
                 key={option[valueKey] as string}
                 onClick={() => handleOptionClick(option)}
-                className="option"
+                onKeyDown={(e) => handleKeyDown(e, option)}
+                className={`option ${
+                  internallySelected &&
+                  internallySelected[valueKey] === option[valueKey]
+                    ? "selected"
+                    : ""
+                }`}
               >
                 {option[labelKey] as string}
-              </div>
+              </li>
             );
           })}
-        </div>
+        </ul>
       )}
     </div>
   );

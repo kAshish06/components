@@ -13,7 +13,7 @@ export const options = [
   },
   {
     label: "Sadhna",
-    value: "s",
+    value: "sa",
   },
   {
     label: "Puran",
@@ -25,18 +25,34 @@ export const options = [
   },
   {
     label: "Sudha",
-    value: "s",
-  },
-  {
-    label: "Suman",
     value: "su",
   },
   {
-    label: "Sumeet",
+    label: "Suman",
     value: "sum",
+  },
+  {
+    label: "Sumeet Gudda",
+    value: "sg",
   },
   {
     label: "Dhab Dhab",
     value: "d",
+  },
+  {
+    label: "Tanay",
+    value: "t",
+  },
+  {
+    label: "Neelu",
+    value: "ne",
+  },
+  {
+    label: "Sneha",
+    value: "sn",
+  },
+  {
+    label: "Sumeet Jalebi",
+    value: "sj",
   },
 ];

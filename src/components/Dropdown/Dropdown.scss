@@ -6,10 +6,20 @@
     justify-content: space-between;
     padding: 5px;
     border: 1px solid #000;
+    width: 100%;
   }
-  .option {
-    padding: 5px;
-    &:hover {
+  .option-container {
+    border: 1px solid #000;
+    .option {
+      padding: 5px;
+      &:hover {
+        background-color: grey;
+      }
+      &:focus {
+        outline: auto;
+      }
+    }
+    .selected {
       background-color: grey;
     }
   }
