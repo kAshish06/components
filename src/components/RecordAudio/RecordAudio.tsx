@@ -3,36 +3,51 @@ import React from "react";
 type Props = {
   children: React.ReactNode;
   recordInProgressDisplay: React.ReactNode;
+  play?: React.ReactNode;
+  pause?: React.ReactNode;
 };
 export default function RecordAudio({
   children,
   recordInProgressDisplay,
+  play = <span>Play</span>,
+  pause = <span>Pause</span>,
 }: Props) {
   const [isRecording, setIsRecording] = React.useState(false);
-  const [elapsedTime, setElapsedTime] = React.useState("");
+  const [isPaused, setIsPaused] = React.useState(false);
+  const [elapsedTime, setElapsedTime] = React.useState(0);
   const intervalRef = React.useRef<number>(undefined);
-  const startTimeRef = React.useRef<number>(Date.now());
-  const handleRecord = () => {
-    setIsRecording(true);
-    startTimeRef.current = Date.now();
+  const startTimer = () => {
     intervalRef.current = setInterval(() => {
-      const currentTime = Date.now();
-      const elapsedTime = currentTime - startTimeRef.current;
-      const formattedElapsedTime = formatElapsedTime(elapsedTime);
-      setElapsedTime(formattedElapsedTime);
+      setElapsedTime((prev) => prev + 1);
     }, 1000);
   };
-  const handleStop = () => {
-    startTimeRef.current = Date.now();
+  const stopTime = () => {
     clearInterval(intervalRef.current);
+  };
+  const handleRecord = () => {
+    setIsRecording(true);
+    startTimer();
+    setElapsedTime(0);
+  };
+  const handleStop = () => {
+    stopTime();
     setIsRecording(false);
+  };
+  const handlePlayPause = () => {
+    if (isPaused) {
+      startTimer();
+    } else {
+      stopTime();
+    }
+    setIsPaused((prev) => !prev);
   };
   return (
     <div>
       {isRecording ? (
         <div>
           {recordInProgressDisplay}
-          <span>{elapsedTime}</span>
+          <span>{formatElapsedTime(elapsedTime)}</span>
+          <button onClick={handlePlayPause}>{isPaused ? play : pause}</button>
           <button onClick={handleStop}>Stop</button>
         </div>
       ) : (
@@ -43,9 +58,9 @@ export default function RecordAudio({
 }
 
 function formatElapsedTime(time: number) {
-  const seconds = Math.floor(time / 1000) % 60;
-  const minutes = Math.floor(time / 1000 / 60);
-  const hours = Math.floor(time / 1000 / 3600);
+  const seconds = Math.floor(time % 60);
+  const minutes = Math.floor(time / 60);
+  const hours = Math.floor(time / 3600);
   let formattedValue = "";
   if (hours) {
     formattedValue += `${hours}:`;
