@@ -1,37 +1,39 @@
 import React from "react";
-import recorder from "./recorder";
-
+import useRecorder from "./useRecorder";
+import "./ReacordAudio.scss";
 type Props = {
   children: React.ReactNode;
   recordInProgressDisplay: React.ReactNode;
-  play?: React.ReactNode;
+  resume?: React.ReactNode;
   pause?: React.ReactNode;
+  onFinish: (audioUrl: string) => void;
+  displayPlayer?: boolean;
 };
 export default function RecordAudio({
   children,
   recordInProgressDisplay,
-  play = <span>Play</span>,
+  resume = <span>Play</span>,
   pause = <span>Pause</span>,
+  onFinish,
+  displayPlayer = false,
 }: Props) {
   const [isRecording, setIsRecording] = React.useState(false);
   const [isPaused, setIsPaused] = React.useState(false);
   const [elapsedTime, setElapsedTime] = React.useState(0);
   const [audioUrl, setAudioUrl] = React.useState("");
-  const mediaRecorderRef = React.useRef<MediaRecorder>(null);
+  const handleRecording = React.useCallback((recordedAudioUrl: string) => {
+    setAudioUrl(recordedAudioUrl);
+    onFinish(recordedAudioUrl);
+  }, []);
+  const {
+    start,
+    stop,
+    pause: pauseRecorder,
+    resume: resumeRecorder,
+  } = useRecorder(handleRecording);
   const intervalRef = React.useRef<number>(undefined);
   const audioRef = React.useRef<HTMLAudioElement>(null);
 
-  React.useEffect(() => {
-    recorder((recordedAudioUrl: string) => {
-      setAudioUrl(recordedAudioUrl);
-    })
-      .then((mediaRecorder) => {
-        mediaRecorderRef.current = mediaRecorder;
-      })
-      .catch(() => {
-        console.log("something went wrong");
-      });
-  }, []);
   const startTimer = () => {
     intervalRef.current = setInterval(() => {
       setElapsedTime((prev) => prev + 1);
@@ -44,43 +46,46 @@ export default function RecordAudio({
     setIsRecording(true);
     startTimer();
     setElapsedTime(0);
+    setAudioUrl("");
     /** Initiate Recorder */
-    if (mediaRecorderRef.current) {
-      mediaRecorderRef.current.start();
-    }
+    start();
   };
   const handleStop = () => {
-    mediaRecorderRef.current?.stop();
+    stop();
     stopTime();
     setIsRecording(false);
   };
   const handlePlayPause = () => {
     if (isPaused) {
+      resumeRecorder();
       startTimer();
     } else {
+      pauseRecorder();
       stopTime();
     }
     setIsPaused((prev) => !prev);
   };
   return (
-    <div>
+    <div className="record-audio-container">
       {isRecording ? (
-        <div>
-          {recordInProgressDisplay}
+        <div className="recording-container">
+          <div className="recording-display-slot">
+            {recordInProgressDisplay}
+          </div>
           <span>{formatElapsedTime(elapsedTime)}</span>
-          <button onClick={handlePlayPause}>{isPaused ? play : pause}</button>
+          <button onClick={handlePlayPause}>{isPaused ? resume : pause}</button>
           <button onClick={handleStop}>Stop</button>
         </div>
       ) : (
         <button onClick={handleRecord}>{children}</button>
       )}
-      {audioUrl && (
-        <>
+      {displayPlayer && audioUrl && (
+        <div>
           <audio ref={audioRef}>
             <source src={audioUrl} type="audio/ogg" />
           </audio>
           <button onClick={() => audioRef.current?.play()}>Play</button>
-        </>
+        </div>
       )}
     </div>
   );

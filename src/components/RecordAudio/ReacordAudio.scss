@@ -1,2 +1,12 @@
-
-
+.record-audio-container {
+  display: relative;
+  width: 100%;
+  .recording-container {
+    width: 100%;
+    display: flex;
+    gap: 5px;
+    .recording-display-slot {
+      flex-grow: 1;
+    }
+  }
+}

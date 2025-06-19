@@ -1,3 +1,4 @@
+import React from "react";
 import Tree from "./components/Tree/Tree";
 import { treeData } from "./components/Tree/mock";
 import Dropdown from "./components/Dropdown/Dropdown";
@@ -6,6 +7,12 @@ import RecordAudio from "./components/RecordAudio/RecordAudio";
 import "./App.css";
 
 function App() {
+  const [recordedAudio, setRecordedAudio] = React.useState("");
+  const audioRef = React.useRef<HTMLAudioElement>(null);
+  const handleAudio = (audio: string) => {
+    setRecordedAudio(audio);
+  };
+
   return (
     <>
       {/* <Tree data={treeData} selectable={true} /> */}
@@ -16,9 +23,20 @@ function App() {
         selected={options[0]}
       />
       <div>Testing</div>
-      <RecordAudio recordInProgressDisplay={<span>recording...</span>}>
+      <RecordAudio
+        recordInProgressDisplay={<span>recording...</span>}
+        onFinish={handleAudio}
+      >
         <span>Record</span>
       </RecordAudio>
+      {recordedAudio && (
+        <div>
+          <audio ref={audioRef}>
+            <source src={recordedAudio} type="audio/ogg" />
+          </audio>
+          <button onClick={() => audioRef.current?.play()}>Play</button>
+        </div>
+      )}
     </>
   );
 }
