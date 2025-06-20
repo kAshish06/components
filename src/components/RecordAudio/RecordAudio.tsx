@@ -6,16 +6,24 @@ type Props = {
   recordInProgressDisplay: React.ReactNode;
   resume?: React.ReactNode;
   pause?: React.ReactNode;
+  onRecordingStarted?: () => void;
+  onRecordingPaused?: () => void;
+  onRecordingResumed?: () => void;
   onFinish: (audioUrl: string) => void;
   displayPlayer?: boolean;
+  pausePlay?: boolean;
 };
 export default function RecordAudio({
   children,
   recordInProgressDisplay,
   resume = <span>Play</span>,
   pause = <span>Pause</span>,
+  onRecordingStarted,
+  onRecordingPaused,
+  onRecordingResumed,
   onFinish,
   displayPlayer = false,
+  pausePlay = false,
 }: Props) {
   const [isRecording, setIsRecording] = React.useState(false);
   const [isPaused, setIsPaused] = React.useState(false);
@@ -49,6 +57,9 @@ export default function RecordAudio({
     setAudioUrl("");
     /** Initiate Recorder */
     start();
+    if (typeof onRecordingStarted === "function") {
+      onRecordingStarted();
+    }
   };
   const handleStop = () => {
     stop();
@@ -59,9 +70,15 @@ export default function RecordAudio({
     if (isPaused) {
       resumeRecorder();
       startTimer();
+      if (typeof onRecordingResumed === "function") {
+        onRecordingResumed();
+      }
     } else {
       pauseRecorder();
       stopTime();
+      if (typeof onRecordingPaused === "function") {
+        onRecordingPaused();
+      }
     }
     setIsPaused((prev) => !prev);
   };
@@ -72,8 +89,14 @@ export default function RecordAudio({
           <div className="recording-display-slot">
             {recordInProgressDisplay}
           </div>
-          <span>{formatElapsedTime(elapsedTime)}</span>
-          <button onClick={handlePlayPause}>{isPaused ? resume : pause}</button>
+          <span className="recording-time">
+            {formatElapsedTime(elapsedTime)}
+          </span>
+          {pausePlay && (
+            <button onClick={handlePlayPause}>
+              {isPaused ? resume : pause}
+            </button>
+          )}
           <button onClick={handleStop}>Stop</button>
         </div>
       ) : (
@@ -99,5 +122,7 @@ function formatElapsedTime(time: number) {
   if (hours) {
     formattedValue += `${hours}:`;
   }
-  return (formattedValue += `${minutes}:${seconds}`);
+  return (formattedValue += `${minutes >= 10 ? minutes : `0${minutes}`}:${
+    seconds >= 10 ? seconds : `0${seconds}`
+  }`);
 }

@@ -8,5 +8,9 @@
     .recording-display-slot {
       flex-grow: 1;
     }
+    .recording-time {
+      min-width: 100px;
+      text-align: right;
+    }
   }
 }
