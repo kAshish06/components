@@ -96,21 +96,33 @@ export default function RecordAudio({
             {formatElapsedTime(elapsedTime)}
           </span>
           {pausePlay && (
-            <button onClick={handlePlayPause}>
+            <button
+              aria-label={`${isPaused ? "Resume" : "Pause"}`}
+              onClick={handlePlayPause}
+            >
               {isPaused ? resume : pause}
             </button>
           )}
-          <button onClick={handleStop}>Stop</button>
+          <button aria-label="Stop Recording" onClick={handleStop}>
+            Stop
+          </button>
         </div>
       ) : (
-        <button onClick={handleRecord}>{children}</button>
+        <button aria-label="Record Audio" onClick={handleRecord}>
+          {children}
+        </button>
       )}
       {displayPlayer && audioUrl && (
         <div>
           <audio ref={audioRef}>
             <source src={audioUrl} type="audio/webm" />
           </audio>
-          <button onClick={() => audioRef.current?.play()}>Play</button>
+          <button
+            aria-label="Play Recorded Audio"
+            onClick={() => audioRef.current?.play()}
+          >
+            Play
+          </button>
         </div>
       )}
     </div>
