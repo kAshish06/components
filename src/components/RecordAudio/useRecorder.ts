@@ -1,12 +1,18 @@
 import React from "react";
 
-export default function useRecorder(
+export function useRecorder(
   onStop: (audioUrl: string) => void,
   { mimeType }: { mimeType: string } = { mimeType: "audio/webm" }
 ) {
   const mediaRecorderRef = React.useRef<MediaRecorder>(null);
   const audioChunksRef = React.useRef<Blob[]>(null);
   const mediaStreamRef = React.useRef<MediaStream>(null);
+
+  React.useEffect(() => {
+    return () => {
+      recorderCleanup();
+    };
+  }, []);
   const recorderCleanup = () => {
     mediaStreamRef.current
       ?.getTracks()
@@ -21,6 +27,7 @@ export default function useRecorder(
       mediaRecorderRef.current = null;
     }
   };
+
   const createRecorder = React.useCallback(async () => {
     let audioUrl: string;
     const audioStream = await navigator.mediaDevices.getUserMedia({
@@ -45,6 +52,7 @@ export default function useRecorder(
     };
     return { recorder, audioStream };
   }, [onStop, mimeType]);
+
   const start = React.useCallback(async () => {
     const { recorder, audioStream } = await createRecorder();
     mediaRecorderRef.current = recorder;
@@ -54,16 +62,19 @@ export default function useRecorder(
       mediaRecorderRef.current.start();
     }
   }, [createRecorder]);
+
   const stop = React.useCallback(() => {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
     }
   }, []);
+
   const pause = React.useCallback(() => {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.pause();
     }
   }, []);
+
   const resume = React.useCallback(() => {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.resume();
@@ -76,3 +87,5 @@ export default function useRecorder(
   );
   return recorderFunctions;
 }
+
+export default useRecorder;
