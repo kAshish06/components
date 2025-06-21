@@ -4,26 +4,28 @@ import "./ReacordAudio.scss";
 type Props = {
   children: React.ReactNode;
   recordInProgressDisplay: React.ReactNode;
-  resume?: React.ReactNode;
-  pause?: React.ReactNode;
+  resumeButton?: React.ReactNode;
+  pauseButton?: React.ReactNode;
+  stopButton?: React.ReactNode;
   onRecordingStarted?: () => void;
   onRecordingPaused?: () => void;
   onRecordingResumed?: () => void;
   onFinish: (audioUrl: string) => void;
   displayPlayer?: boolean;
-  pausePlay?: boolean;
+  showPauseResumeButton?: boolean;
 };
 export default function RecordAudio({
   children,
   recordInProgressDisplay,
-  resume = <span>Play</span>,
-  pause = <span>Pause</span>,
+  resumeButton = <span>Play</span>,
+  pauseButton = <span>Pause</span>,
+  stopButton = <span>Stop</span>,
   onRecordingStarted,
   onRecordingPaused,
   onRecordingResumed,
   onFinish,
   displayPlayer = false,
-  pausePlay = false,
+  showPauseResumeButton = false,
 }: Props) {
   const [isRecording, setIsRecording] = React.useState(false);
   const [isPaused, setIsPaused] = React.useState(false);
@@ -95,16 +97,16 @@ export default function RecordAudio({
           <span className="recording-time">
             {formatElapsedTime(elapsedTime)}
           </span>
-          {pausePlay && (
+          {showPauseResumeButton && (
             <button
               aria-label={`${isPaused ? "Resume" : "Pause"}`}
               onClick={handlePlayPause}
             >
-              {isPaused ? resume : pause}
+              {isPaused ? resumeButton : pauseButton}
             </button>
           )}
           <button aria-label="Stop Recording" onClick={handleStop}>
-            Stop
+            {stopButton}
           </button>
         </div>
       ) : (
