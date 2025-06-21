@@ -13,6 +13,7 @@ type Props = {
   onFinish: (audioUrl: string) => void;
   displayPlayer?: boolean;
   showPauseResumeButton?: boolean;
+  mimeType?: string;
 };
 export default function RecordAudio({
   children,
@@ -26,6 +27,7 @@ export default function RecordAudio({
   onFinish,
   displayPlayer = false,
   showPauseResumeButton = false,
+  mimeType = "audio/webm",
 }: Props) {
   const [isRecording, setIsRecording] = React.useState(false);
   const [isPaused, setIsPaused] = React.useState(false);
@@ -43,7 +45,7 @@ export default function RecordAudio({
     stop,
     pause: pauseRecorder,
     resume: resumeRecorder,
-  } = useRecorder(handleRecording);
+  } = useRecorder(handleRecording, { mimeType });
   const intervalRef = React.useRef<number>(undefined);
   const audioRef = React.useRef<HTMLAudioElement>(null);
 
@@ -117,7 +119,7 @@ export default function RecordAudio({
       {displayPlayer && audioUrl && (
         <div>
           <audio ref={audioRef}>
-            <source src={audioUrl} type="audio/webm" />
+            <source src={audioUrl} type={mimeType} />
           </audio>
           <button
             aria-label="Play Recorded Audio"

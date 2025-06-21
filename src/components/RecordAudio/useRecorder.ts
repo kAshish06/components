@@ -1,6 +1,9 @@
 import React from "react";
 
-export default function useRecorder(onStop: (audioUrl: string) => void) {
+export default function useRecorder(
+  onStop: (audioUrl: string) => void,
+  { mimeType }: { mimeType: string } = { mimeType: "audio/webm" }
+) {
   const mediaRecorderRef = React.useRef<MediaRecorder>(null);
   const audioChunksRef = React.useRef<Blob[]>(null);
   const mediaStreamRef = React.useRef<MediaStream>(null);
@@ -32,7 +35,7 @@ export default function useRecorder(onStop: (audioUrl: string) => void) {
     recorder.onstop = () => {
       if (audioChunksRef.current) {
         const audioBlob = new Blob(audioChunksRef.current, {
-          type: "audio/webm",
+          type: mimeType,
         });
         audioUrl = URL.createObjectURL(audioBlob);
         onStop(audioUrl);
@@ -41,7 +44,7 @@ export default function useRecorder(onStop: (audioUrl: string) => void) {
       }
     };
     return { recorder, audioStream };
-  }, [onStop]);
+  }, [onStop, mimeType]);
   const start = React.useCallback(async () => {
     const { recorder, audioStream } = await createRecorder();
     mediaRecorderRef.current = recorder;
