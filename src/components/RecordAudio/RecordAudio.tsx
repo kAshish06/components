@@ -29,10 +29,13 @@ export default function RecordAudio({
   const [isPaused, setIsPaused] = React.useState(false);
   const [elapsedTime, setElapsedTime] = React.useState(0);
   const [audioUrl, setAudioUrl] = React.useState("");
-  const handleRecording = React.useCallback((recordedAudioUrl: string) => {
-    setAudioUrl(recordedAudioUrl);
-    onFinish(recordedAudioUrl);
-  }, []);
+  const handleRecording = React.useCallback(
+    (recordedAudioUrl: string) => {
+      setAudioUrl(recordedAudioUrl);
+      onFinish(recordedAudioUrl);
+    },
+    [onFinish]
+  );
   const {
     start,
     stop,
@@ -105,7 +108,7 @@ export default function RecordAudio({
       {displayPlayer && audioUrl && (
         <div>
           <audio ref={audioRef}>
-            <source src={audioUrl} type="audio/ogg" />
+            <source src={audioUrl} type="audio/webm" />
           </audio>
           <button onClick={() => audioRef.current?.play()}>Play</button>
         </div>
