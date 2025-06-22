@@ -1,9 +1,43 @@
-import React from "react";
+import React, { useReducer } from "react";
+const RECORDER_STATE = {
+  RECORDING: "RECORDING",
+  PAUSED: "PAUSED",
+  IDLE: "IDLE",
+};
+const actions = {
+  START: "START",
+  STOP: "STOP",
+  PAUSE: "PAUSE",
+  RESUME: "RESUME",
+};
 
+const recorderStateReducer = (
+  prevState: string,
+  action: { type: string }
+): string => {
+  switch (action.type) {
+    case actions.START: {
+      return RECORDER_STATE.RECORDING;
+    }
+    case actions.STOP: {
+      return RECORDER_STATE.IDLE;
+    }
+    case actions.PAUSE: {
+      return RECORDER_STATE.PAUSED;
+    }
+    case actions.RESUME: {
+      return RECORDER_STATE.RECORDING;
+    }
+    default: {
+      return RECORDER_STATE.IDLE;
+    }
+  }
+};
 export function useRecorder(
   onStop: (audioUrl: string) => void,
   { mimeType }: { mimeType: string } = { mimeType: "audio/webm" }
 ) {
+  const [recorderState, dispatch] = useReducer(recorderStateReducer, "idle");
   const mediaRecorderRef = React.useRef<MediaRecorder>(null);
   const audioChunksRef = React.useRef<Blob[]>(null);
   const mediaStreamRef = React.useRef<MediaStream>(null);
@@ -61,29 +95,33 @@ export function useRecorder(
       audioChunksRef.current = [];
       mediaRecorderRef.current.start();
     }
+    dispatch({ type: actions.START });
   }, [createRecorder]);
 
   const stop = React.useCallback(() => {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
+      dispatch({ type: actions.STOP });
     }
   }, []);
 
   const pause = React.useCallback(() => {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.pause();
+      dispatch({ type: actions.PAUSE });
     }
   }, []);
 
   const resume = React.useCallback(() => {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.resume();
+      dispatch({ type: actions.RESUME });
     }
   }, []);
 
   const recorderFunctions = React.useMemo(
-    () => ({ start, stop, pause, resume }),
-    [pause, resume, start, stop]
+    () => ({ recorderState, start, stop, pause, resume }),
+    [recorderState, pause, resume, start, stop]
   );
   return recorderFunctions;
 }
