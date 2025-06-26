@@ -27,7 +27,7 @@ function App() {
         recordInProgressDisplay={<span>recording...</span>}
         onFinish={handleAudio}
       >
-        <span>Record</span>
+        <span>{">"}</span>
       </RecordAudio>
       {recordedAudio && (
         <div>
