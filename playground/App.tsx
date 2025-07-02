@@ -1,9 +1,8 @@
 import React from "react";
-import Tree from "./components/Tree/Tree";
-import { treeData } from "./components/Tree/mock";
-import Dropdown from "./components/Dropdown/Dropdown";
-import { options } from "./components/Dropdown/mock";
-import RecordAudio from "./components/RecordAudio/RecordAudio";
+// import { Tree } from "@components/tree";
+// import { treeData } from "@components/tree/mock";
+import { Dropdown, options } from "@components/dropdown";
+import { RecordAudio } from "@components/record-audio";
 import "./App.css";
 
 function App() {
