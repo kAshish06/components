@@ -1,6 +1,6 @@
 import React from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import useClickOutside from "../../hooks/useClickOutside";
+import useClickOutside from "./useClickOutside";
 
 import "./Dropdown.scss";
 
