@@ -4,16 +4,16 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "build:packages": "pnpm -r --filter ./packages... run build",
-    "build:all": "pnpm run build:packages && pnpm --filter ./playground... run build",
-    "dev:packages": "pnpm -r --filter ./packages... run dev",
-    "prepare": "pnpm run build:packages",
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "preview": "vite preview",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
-    "preview": "vite preview"
+    "build:packages": "pnpm -r --filter './packages/*' run build",
+    "dev:packages": "pnpm -r --filter './packages/*' run dev",
+    "build:all": "pnpm run build:packages && pnpm --filter ./playground run build",
+    "prepare": "pnpm run build:packages"
   },
   "dependencies": {
     "lucide-react": "^0.510.0",
